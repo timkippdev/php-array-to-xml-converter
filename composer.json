@@ -1,0 +1,40 @@
+{
+  "name": "timkippdev/array-to-xml-converter",
+  "description": "PHP library to convert an array of data to XML",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "php",
+    "array",
+    "xml",
+    "converter"
+  ],
+  "authors": [
+    {
+      "name": "Tim Kipp",
+      "email": "timkipp.22.developer@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.1.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8"
+  },
+  "autoload": {
+    "psr-4": {
+      "TimKippDev\\ArrayToXmlConverter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "discard-changes": true,
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
