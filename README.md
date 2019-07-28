@@ -16,8 +16,16 @@ use TimKippDev\ArrayToXmlConverter\ArrayToXmlConverter;
 
 $data = [
     'product-1' => [
+        '_attributes' => [
+            'key' => 'value'
+        ], 
         'title' => 'Product One',
-        'price' => '$9.99'
+        'price' => [
+            '_attributes' => [
+                'locale' => 'us'
+            ],
+            '_value' => '$9.99'
+        ]
     ],
     'product-2' => [
         'title' => 'Product Two',
@@ -28,14 +36,18 @@ $data = [
 $xml = ArrayToXmlConverter::convert($data);
 ```
 
-The above example will generate the following result stored in the `$xml` variable.
+The above example will generate the following result stored in the `$xml` variable. 
+
+Notice that the `_attributes` property can be used to add property values to the current node. If you need to add `_attributes` for a node with a single value, like "price" in the "product-1" node, you need to use `_value` to specify the value of the node.
+
+For adding properties to the root none, see below in "Conversion Options".
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-  <product-1>
+  <product-1 key="value">
     <title>Product One</title>
-    <price>$9.99</price>
+    <price locale="us">$9.99</price>
   </product-1>
   <product-2>
     <title>Product Two</title>
@@ -59,9 +71,12 @@ $data = [
 
 $xml = ArrayToXmlConverter::convert($data, [
     'encoding' => 'ISO-8859-15', // default - "UTF-8"
-    'formatOutput' => false, // default - true
+    'formatOutput' => true, // default - true
     'rootName' => 'new-root', // default - "root"
-    'version' => '2.0' // default - "1.0
+    'rootAttributes' => [
+        'key' => 'value'
+    ], // default - no attributes (empty array)
+    'version' => '2.0' // default - "1.0"
 ]);
 ```
 
@@ -69,7 +84,9 @@ The above example will generate the following result stored in the `$xml` variab
 
 ```xml
 <?xml version="2.0" encoding="ISO-8859-15"?>
-<new-root><foo>bar</foo></new-root>
+<new-root key="value">
+  <foo>bar</foo>
+</new-root>
 ```
 
 ## Running Tests

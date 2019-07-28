@@ -12,6 +12,7 @@ class ArrayToXmlConverter {
     private $encoding;
     private $formatOutput;
     private $rootName;
+    private $rootAttributes;
     private $version;
     
     public static function convert(array $dataToConvert, array $options = []) 
@@ -27,6 +28,7 @@ class ArrayToXmlConverter {
         $this->encoding = $this->getOptionValue($options, 'encoding', 'UTF-8');
         $this->formatOutput = boolval($this->getOptionValue($options, 'formatOutput', true));
         $this->rootName = $this->getOptionValue($options, 'rootName', 'root');
+        $this->rootAttributes = $this->getOptionValue($options, 'rootAttributes', []);
         $this->version = $this->getOptionValue($options, 'version', '1.0');
 
         $this->document = new DOMDocument($this->version, $this->encoding);
@@ -37,10 +39,20 @@ class ArrayToXmlConverter {
     {
         $rootElement = $this->document->createElement($this->rootName);
 
+        $this->addAttributesToElement($rootElement, $this->rootAttributes);
+
         $this->appendDataToElement($rootElement, $this->dataToConvert);
 
         $this->document->appendChild($rootElement);
         return $this->document->saveXML();
+    }
+
+    protected function addAttributesToElement(DOMElement $element, array $attributes)
+    {
+        foreach ($attributes as $key => $value)
+        {
+            $element->setAttribute($key, $value);
+        }
     }
 
     protected function appendDataToElement(DOMElement $element, $data)
@@ -58,7 +70,19 @@ class ArrayToXmlConverter {
         {
             if (!$isDataSequentialArray)
             {
-                $this->addChildNode($element, $key, $value);
+                if ($key == '_attributes')
+                {
+                    $this->addAttributesToElement($element, $data[$key]);
+                }
+                else if ($key == '_value')
+                {
+                    $this->appendDataToElement($element, $value);
+                }
+                else
+                {
+                    $this->addChildNode($element, $key, $value);
+                }
+
                 continue;
             }
             

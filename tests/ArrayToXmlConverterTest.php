@@ -25,6 +25,36 @@ class ArrayToXmlConverterTest extends TestCase {
         $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?><root><unit-test>test</unit-test></root>', str_replace("\n", '', $response));
     }
 
+    public function test_convert_simple_withRootAttributes() 
+    {
+        $response = ArrayToXmlConverter::convert([
+            'unit' => 'test'
+        ], [
+            'formatOutput' => false,
+            'rootAttributes' => [
+                'key' => 'value'
+            ]
+        ]);
+
+        $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?><root key="value"><unit>test</unit></root>', str_replace("\n", '', $response));
+    }
+
+    public function test_convert_simple_withElementAttributes() 
+    {
+        $response = ArrayToXmlConverter::convert([
+            'unit' => [
+                '_attributes' => [
+                    'key' => 'value'
+                ],
+                '_value' => 'test'
+            ]
+        ], [
+            'formatOutput' => false,
+        ]);
+
+        $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?><root><unit key="value">test</unit></root>', str_replace("\n", '', $response));
+    }
+
     public function test_convert_verifyOptionOverrides() 
     {
         $response = ArrayToXmlConverter::convert([
